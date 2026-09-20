@@ -48,9 +48,9 @@ import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuth
 import {getFirestore,doc,setDoc,getDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 const FIREBASE_CONFIG={
- apiKey:"YOUR_API_KEY",authDomain:"YOUR_PROJECT.firebaseapp.com",
- projectId:"YOUR_PROJECT_ID",storageBucket:"YOUR_PROJECT.firebasestorage.app",
- messagingSenderId:"YOUR_SENDER_ID",appId:"YOUR_APP_ID"
+ apiKey:"AIzaSyCYNa_jqPMtti2H5DYkRq1-w7Pyt1OH8jw",authDomain:"coupleconnect-d6773.firebaseapp.com",
+ projectId:"coupleconnect-d6773",storageBucket:"coupleconnect-d6773.firebasestorage.app",
+ messagingSenderId:"854154997930",appId:"1:854154997930:web:35abd51504f3a92791a0d3"
 };
 let cloudReady=false,user=null,db,auth,unsubscribe=null;
 try{
@@ -71,18 +71,27 @@ window.logout=async()=>{if(auth)await signOut(auth);if(unsubscribe)unsubscribe()
 window.createCouple=async()=>{
  if(!requireReady())return;
  let code=Math.random().toString(36).slice(2,8).toUpperCase();
- await setDoc(doc(db,"couples",code),{members:[user.uid],createdAt:Date.now()});
+ const now=Date.now();
+ await setDoc(doc(db,"couples",code),{members:[user.uid],createdAt:now});
+ await setDoc(doc(db,"coupleInvites",code),{coupleId:code,createdBy:user.uid,createdAt:now});
  localStorage.coupleCode=code;coupleCode.value=code;startRealtime();
  status("Couple created: "+code+" — share this code with your partner.");
 };
 window.joinCouple=async()=>{
  if(!requireReady())return;
- let code=coupleCode.value.trim().toUpperCase(),ref=doc(db,"couples",code),snap=await getDoc(ref);
- if(!snap.exists())return alert("Couple code not found.");
- let members=snap.data().members||[];
- if(!members.includes(user.uid))members.push(user.uid);
- if(members.length>2)return alert("This couple already has two members.");
- await setDoc(ref,{members},{merge:true});localStorage.coupleCode=code;startRealtime();alert("Joined couple.");
+ let code=coupleCode.value.trim().toUpperCase();
+ if(!code)return alert("Enter the couple code first.");
+ const invite=await getDoc(doc(db,"coupleInvites",code));
+ if(!invite.exists())return alert("Couple code not found or no longer available.");
+ const coupleId=invite.data().coupleId;
+ const ref=doc(db,"couples",coupleId);
+ const snap=await getDoc(ref);
+ if(!snap.exists())return alert("Couple could not be found.");
+ const members=snap.data().members||[];
+ if(members.includes(user.uid)){localStorage.coupleCode=coupleId;startRealtime();return alert("You are already a member of this couple.");}
+ if(members.length>=2)return alert("This couple already has two members.");
+ await setDoc(ref,{members:[...members,user.uid]},{merge:true});
+ localStorage.coupleCode=coupleId;coupleCode.value=coupleId;startRealtime();alert("Joined couple.");
 };
 
 function startRealtime(){

@@ -1,0 +1,52 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isMember(coupleId) {
+      return signedIn() &&
+        request.auth.uid in
+        get(/databases/$(database)/documents/couples/$(coupleId)).data.members;
+    }
+
+    match /couples/{coupleId} {
+      // A new couple can be created by its first authenticated member.
+      allow create: if signedIn()
+        && request.resource.data.members.size() == 1
+        && request.resource.data.members[0] == request.auth.uid;
+
+      // Existing members can read/update their couple.
+      allow read, update: if isMember(coupleId);
+
+      // A second authenticated user may join only by adding themselves
+      // to a one-member couple. Other fields cannot be changed by this join.
+      allow update: if signedIn()
+        && !(request.auth.uid in resource.data.members)
+        && resource.data.members.size() == 1
+        && request.resource.data.members.size() == 2
+        && request.resource.data.members[0] == resource.data.members[0]
+        && request.resource.data.members[1] == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members']);
+
+      match /shared/{documentId} {
+        allow read, write: if isMember(coupleId);
+      }
+    }
+
+    // Invite documents contain only the couple code/id and creator metadata.
+    // Authenticated users can look up an invite by the exact code they enter,
+    // but cannot list all invites.
+    match /coupleInvites/{code} {
+      allow get: if signedIn();
+      allow list: if false;
+      allow create: if signedIn()
+        && request.resource.data.coupleId == code
+        && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if false;
+    }
+  }
+}

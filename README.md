@@ -1,18 +1,14 @@
-# CoupleConnect v4 — Real-Time Cloud Sync
+# CoupleConnect – Firebase Realtime Build
 
-This version adds automatic Firestore real-time synchronization.
+This build is connected to the CoupleConnect Firebase web app configuration.
 
 ## Firebase setup
-1. Create a Firebase project.
-2. Enable Authentication → Email/Password.
-3. Create a Firestore database.
-4. Register a Web App.
-5. Replace the `YOUR_...` Firebase config values in `index.html`.
-6. Deploy to GitHub Pages.
-7. Each partner creates an account. One creates a couple code and the other joins it.
+1. Authentication → Sign-in method → Email/Password: Enabled.
+2. Firestore Database: created.
+3. Replace the Firestore Rules with the secure rules supplied with this build/instructions and Publish.
 
-## Firestore security
-Before production use, configure rules so users can only read/write couples where their UID is in `members`. Do not use open/test-mode Firestore rules.
+## Deploy
+Upload all files to GitHub Pages (or another static HTTPS host).
 
-## Current sync behavior
-Goals, intimacy activities, favorites, tasks and calendar events are written to the shared document automatically after changes and are received through `onSnapshot` in real time.
+## Important
+The Firebase web config contains app identifiers. Security is provided by Firebase Authentication and Firestore Security Rules; never put passwords or service-account private keys in this file.
