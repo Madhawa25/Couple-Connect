@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ff5f7e"><link rel="manifest" href="manifest.json">
+<title>CoupleConnect</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff7fa;color:#29222a}
+header{padding:24px 20px 14px;background:linear-gradient(135deg,#ff5f7e,#ff9a9e);color:#fff;border-radius:0 0 28px 28px}
+h1{margin:0;font-size:28px}.sub{opacity:.9;margin-top:5px}.wrap{padding:16px;max-width:700px;margin:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 4px 18px #0000000d;margin-bottom:12px}
+.big{font-size:30px}.muted{color:#786d75;font-size:13px}.btn{border:0;border-radius:12px;padding:11px 14px;background:#ff5f7e;color:#fff;font-weight:700}
+input,select,textarea{width:100%;padding:12px;border:1px solid #eadde2;border-radius:12px;margin:6px 0 10px;font:inherit}
+nav{position:sticky;bottom:0;background:#fff;border-top:1px solid #eee;padding:8px;display:flex;justify-content:space-around}
+nav button{border:0;background:none;font-size:12px;color:#756a70;padding:6px}.active{color:#ff5f7e;font-weight:700}
+.item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1e8eb}.item:last-child{border:0}
+.check{width:22px;height:22px}.pill{display:inline-block;background:#ffe5eb;color:#c93458;padding:5px 9px;border-radius:20px;font-size:12px}
+.hidden{display:none}.goalbar{height:8px;background:#eee;border-radius:8px;overflow:hidden}.goalbar i{display:block;height:100%;background:#ff5f7e}
+</style></head>
+<body>
+<header><h1>💕 CoupleConnect</h1><div class="sub">Your shared space for love, life & connection</div></header>
+<div class="wrap">
+<section id="dashboard">
+<div class="card"><span class="pill" id="partnerStatus">Partner not connected</span><h2 id="hello">Welcome ❤️</h2><p class="muted">Build your relationship together, one small moment at a time.</p>
+<button class="btn" onclick="connectPartner()">Connect Partner</button></div>
+<div class="grid">
+<div class="card"><div class="big">❤️</div><b>Relationship</b><p class="muted" id="goalCount">0 active goals</p></div>
+<div class="card"><div class="big">😊</div><b>Today's Mood</b><p class="muted">Check in together</p></div>
+</div>
+<div class="card"><h3>Today's Tasks</h3><div id="taskPreview"></div></div>
+<div class="card"><h3>Upcoming</h3><div id="eventPreview"></div></div>
+</section>
+
+<section id="goals" class="hidden"><div class="card"><h2>❤️ Relationship Goals</h2><p class="muted">Shared goals for communication, quality time, affection and intimacy.</p>
+<input id="goalTitle" placeholder="e.g. Friday date night">
+<select id="goalType"><option>Quality Time</option><option>Communication</option><option>Affection & Intimacy</option><option>Financial</option><option>Family & Home</option><option>Personal Growth</option></select>
+<button class="btn" onclick="addGoal()">Add Goal</button></div><div id="goalList"></div></section>
+
+<section id="tasks" class="hidden"><div class="card"><h2>✅ Shared Tasks</h2><input id="taskTitle" placeholder="Task"><input id="taskDue" type="date"><button class="btn" onclick="addTask()">Add Task</button></div><div class="card" id="taskList"></div></section>
+
+<section id="calendar" class="hidden"><div class="card"><h2>📅 Couple Calendar</h2><input id="eventTitle" placeholder="Event"><input id="eventDate" type="date"><input id="eventTime" type="time"><button class="btn" onclick="addEvent()">Add Event</button></div><div class="card" id="eventList"></div></section>
+
+<section id="private" class="hidden"><div class="card"><h2>🔐 Private Connection</h2><p class="muted">This section is designed for mutually agreed, private relationship and intimacy goals.</p>
+<input id="privateGoal" placeholder="Private goal / reminder"><button class="btn" onclick="addPrivate()">Save Privately</button></div><div id="privateList"></div></section>
+</div>
+<nav>
+<button class="active" onclick="show('dashboard',this)">🏠<br>Home</button>
+<button onclick="show('goals',this)">❤️<br>Goals</button>
+<button onclick="show('tasks',this)">✅<br>Tasks</button>
+<button onclick="show('calendar',this)">📅<br>Calendar</button>
+<button onclick="show('private',this)">🔐<br>Private</button>
+</nav>
+<script>
+const S={goals:JSON.parse(localStorage.goals||'[]'),tasks:JSON.parse(localStorage.tasks||'[]'),events:JSON.parse(localStorage.events||'[]'),private:JSON.parse(localStorage.private||'[]')};
+function save(){for(const k in S)localStorage[k]=JSON.stringify(S[k]);render()}
+function show(id,b){document.querySelectorAll('section').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()}
+function addGoal(){let v=goalTitle.value.trim();if(!v)return;S.goals.push({t:v,type:goalType.value,done:0});goalTitle.value='';save()}
+function addTask(){let v=taskTitle.value.trim();if(!v)return;S.tasks.push({t:v,d:taskDue.value,done:false});taskTitle.value='';save()}
+function addEvent(){let v=eventTitle.value.trim();if(!v)return;S.events.push({t:v,d:eventDate.value,time:eventTime.value});eventTitle.value='';save()}
+function addPrivate(){let v=privateGoal.value.trim();if(!v)return;S.private.push({t:v,at:new Date().toLocaleString()});privateGoal.value='';save()}
+function connectPartner(){let name=prompt("Enter your partner's name");if(name){localStorage.partner=name;partnerStatus.textContent='Connected with '+name;hello.textContent='Welcome, '+name+' & you ❤️';render()}}
+function render(){
+partnerStatus.textContent=localStorage.partner?'Connected with '+localStorage.partner:'Partner not connected';
+goalCount.textContent=S.goals.length+' active goals';
+goalList.innerHTML=S.goals.map((g,i)=>`<div class="card"><b>${g.t}</b><p class="muted">${g.type}</p><div class="goalbar"><i style="width:${g.done?100:0}%"></i></div><br><button class="btn" onclick="S.goals[${i}].done=1;save()">Mark complete</button></div>`).join('')||'<div class="card muted">No goals yet.</div>';
+taskList.innerHTML=S.tasks.map((x,i)=>`<div class="item"><input class="check" type="checkbox" ${x.done?'checked':''} onchange="S.tasks[${i}].done=this.checked;save()"><span>${x.t}<br><small class="muted">${x.d||'No due date'}</small></span></div>`).join('')||'<span class="muted">No tasks.</span>';
+taskPreview.innerHTML=S.tasks.filter(x=>!x.done).slice(0,4).map(x=>`<div class="item">☐ ${x.t}</div>`).join('')||'<span class="muted">Nothing pending 🎉</span>';
+eventList.innerHTML=S.events.sort((a,b)=>a.d.localeCompare(b.d)).map(x=>`<div class="item">📅 <span><b>${x.t}</b><br><small class="muted">${x.d} ${x.time||''}</small></span></div>`).join('')||'<span class="muted">No upcoming events.</span>';
+eventPreview.innerHTML=S.events.slice(0,3).map(x=>`<div class="item">📌 ${x.t} — ${x.d}</div>`).join('')||'<span class="muted">No events added.</span>';
+privateList.innerHTML=S.private.map(x=>`<div class="card">🔒 ${x.t}<br><small class="muted">${x.at}</small></div>`).join('')||'<div class="card muted">No private goals saved.</div>';
+}
+render();
+</script></body></html>
