@@ -8,17 +8,17 @@
 <title>CoupleConnect</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff7fa;color:#29222a}
-header{padding:22px 18px 14px;background:linear-gradient(135deg,#ff5f7e,#ff9a9e);color:white;border-radius:0 0 28px 28px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#100d14;color:#f8edf3}
+header{padding:22px 18px 14px;background:linear-gradient(135deg,#251323,#71314e 65%,#bd647c);color:white;border-radius:0 0 28px 28px}
 h1{margin:0;font-size:27px}.sub{opacity:.92}.wrap{padding:15px;max-width:720px;margin:auto}
-.card{background:white;border-radius:18px;padding:15px;box-shadow:0 4px 18px #0000000d;margin-bottom:12px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.big{font-size:29px}.muted{color:#786d75;font-size:13px}
-.btn{border:0;border-radius:12px;padding:10px 13px;background:#ff5f7e;color:white;font-weight:700}
-.secondary{background:#f5e8ec;color:#9b3d59}
-input,select{width:100%;padding:11px;border:1px solid #eadde2;border-radius:12px;margin:5px 0 9px;font:inherit}
-nav{position:sticky;bottom:0;background:#fff;border-top:1px solid #eee;padding:7px;display:flex;justify-content:space-around;z-index:3;overflow:auto}
-nav button{border:0;background:none;font-size:11px;color:#756a70;padding:5px;min-width:55px}.active{color:#ff5f7e;font-weight:700}
-.item{padding:10px 0;border-bottom:1px solid #f1e8eb}.pill{display:inline-block;background:#ffe5eb;color:#c93458;padding:5px 9px;border-radius:20px;font-size:12px}
+.card{background:#211923;border:1px solid #44313f;color:#f8edf3;border-radius:18px;padding:15px;box-shadow:0 4px 18px #00000018;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.big{font-size:29px}.muted{color:#c1aebb;font-size:13px}
+.btn{border:0;border-radius:12px;padding:10px 13px;background:#d45a83;color:white;font-weight:700}
+.secondary{background:#3b2a38;color:#f2c8d9}
+input,select{width:100%;padding:11px;border:1px solid #584454;background:#17121a;color:#fff0f7;border-radius:12px;margin:5px 0 9px;font:inherit}
+.week-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:12px 0}.day-chip{border:1px solid #584454;border-radius:12px;background:#17121a;color:#f8edf3;padding:9px 2px;text-align:center;font-size:11px}.day-chip.selected{background:#8f3659;border-color:#f58ab0}.day-chip b{display:block;font-size:15px;margin-top:5px}.category{font-size:11px;color:#ffb7d0}.plan-row{padding:12px 0;border-bottom:1px solid #44313f}.plan-row:last-child{border-bottom:0}label{font-size:12px;color:#d5bcca}nav{position:sticky;bottom:0;background:#19131c;border-top:1px solid #44313f;padding:7px;display:flex;justify-content:space-around;z-index:3;overflow:auto}
+nav button{border:0;background:none;font-size:11px;color:#756a70;padding:5px;min-width:55px}.active{color:#ff8bb0;font-weight:700}
+.item{padding:10px 0;border-bottom:1px solid #44313f}.pill{display:inline-block;background:#4a293b;color:#ffb7d0;padding:5px 9px;border-radius:20px;font-size:12px}
 .hidden{display:none}.lock{background:#fff0f4}.tag{font-size:11px;background:#f2edf0;border-radius:9px;padding:4px 7px;display:inline-block;margin:2px}
 </style>
 </head>
@@ -39,6 +39,20 @@ nav button{border:0;background:none;font-size:11px;color:#756a70;padding:5px;min
 <div class="card"><div class="big">💕</div><b>Intimacy</b><p class="muted" id="ic">0 activities</p></div>
 </div>
 <div class="card"><h3>Today's Tasks</h3><div id="tp"></div></div>
+</section>
+
+<section id="planner" class="hidden">
+<div class="card"><span class="pill">OUR WEEK • PRIVATE</span><h2>🖤 Intimacy & Quality Time</h2><p class="muted">Plan the moments you both want to make time for. Add several activities to any day. Keep plans mutual, comfortable and flexible.</p>
+<div id="weekStrip" class="week-strip"></div>
+<label for="planDate">Selected date</label><input id="planDate" type="date" onchange="selectPlannerDate(this.value)">
+<label for="planType">Activity</label><select id="planType"><option>❤️ Love & Romance</option><option>🤗 Cuddling & Affection</option><option>🔥 Sex / Intimate Time</option><option>🥂 Quality Time</option><option>💆 Massage & Relaxation</option><option>💬 Deep Conversation</option><option>🌙 Date Night</option><option>✍️ Custom Activity</option></select>
+<label for="planTitle">Plan title (optional)</label><input id="planTitle" placeholder="e.g. phones away, cuddle and talk">
+<div class="grid"><div><label for="planStart">Start time</label><input id="planStart" type="time" value="20:00"></div><div><label for="planEnd">End time (optional)</label><input id="planEnd" type="time"></div></div>
+<label for="planNote">Private note (optional)</label><input id="planNote" placeholder="Anything to prepare or remember">
+<button class="btn" onclick="addPlan()">＋ Add to this day</button></div>
+<div class="card"><h3 id="dayHeading">Selected day</h3><div id="dayPlans"></div></div>
+<div class="card"><h3>🌙 The next 7 days</h3><div id="weekPlans"></div></div>
+<div class="card"><p class="muted">Intimate plans are invitations, not obligations. Both partners should freely agree; either person can change their mind at any time.</p></div>
 </section>
 
 <section id="goals" class="hidden">
@@ -106,6 +120,7 @@ nav button{border:0;background:none;font-size:11px;color:#756a70;padding:5px;min
 
 <nav>
 <button class="active" onclick="show('home',this)">🏠<br>Home</button>
+<button onclick="show('planner',this)">🖤<br>Our Week</button>
 <button onclick="show('account',this)">☁️<br>Sync</button>
 <button onclick="show('goals',this)">❤️<br>Goals</button>
 <button onclick="show('intimacy',this)">💕<br>Intimacy</button>
@@ -116,7 +131,8 @@ nav button{border:0;background:none;font-size:11px;color:#756a70;padding:5px;min
 
 <script>
 const arr=k=>JSON.parse(localStorage[k]||'[]');
-let s={goals:arr('goals'),int:arr('intimacy'),fav:arr('favorites'),tasks:arr('tasks'),events:arr('events')};
+let s={goals:arr('goals'),int:arr('intimacy'),fav:arr('favorites'),tasks:arr('tasks'),events:arr('events'),planner:arr('planner')};
+let selectedPlanDate=new Date().toISOString().slice(0,10);
 let saveTimer;
 
 function save(){
@@ -133,6 +149,13 @@ function show(id,b){
   b.classList.add('active');render();
 }
 function connect(){let n=prompt("Partner name");if(n){localStorage.partner=n;render()}}
+function dateISO(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dayLabel(ds,opts={weekday:'short',month:'short',day:'numeric'}){return new Date(ds+'T12:00:00').toLocaleDateString(undefined,opts)}
+function selectPlannerDate(d){if(!d)return;selectedPlanDate=d;renderPlanner()}
+function addPlan(){const type=document.getElementById('planType').value;const title=document.getElementById('planTitle').value.trim()||type;const start=document.getElementById('planStart').value;const end=document.getElementById('planEnd').value;const note=document.getElementById('planNote').value.trim();if(!selectedPlanDate||!start){alert('Please select a date and start time.');return}if(end&&end<start){alert('End time should be after start time.');return}s.planner.push({id:Date.now()+Math.random(),d:selectedPlanDate,type,title,start,end,note,done:false});document.getElementById('planTitle').value='';document.getElementById('planNote').value='';save()}
+function removePlan(i){s.planner.splice(i,1);save()}
+function togglePlan(i){s.planner[i].done=!s.planner[i].done;save()}
+function renderPlanner(){const dateInput=document.getElementById('planDate');if(!dateInput)return;dateInput.value=selectedPlanDate;const start=new Date();start.setHours(12,0,0,0);const days=Array.from({length:7},(_,i)=>{let d=new Date(start);d.setDate(d.getDate()+i);return dateISO(d)});document.getElementById('weekStrip').innerHTML=days.map(d=>`<button class="day-chip ${d===selectedPlanDate?'selected':''}" onclick="selectPlannerDate('${d}')">${dayLabel(d,{weekday:'short'})}<b>${d.slice(8,10)}</b><span>${s.planner.filter(x=>x.d===d).length} plans</span></button>`).join('');document.getElementById('dayHeading').textContent=dayLabel(selectedPlanDate,{weekday:'long',month:'long',day:'numeric'});const list=s.planner.map((x,i)=>({...x,i})).filter(x=>x.d===selectedPlanDate).sort((a,b)=>a.start.localeCompare(b.start));document.getElementById('dayPlans').innerHTML=list.map(x=>`<div class="plan-row"><div style="display:flex;gap:10px;align-items:flex-start"><div style="min-width:62px;color:#ffb7d0;font-weight:700">${esc(x.start)}${x.end?'<br><small class="muted">to '+esc(x.end)+'</small>':''}</div><div style="flex:1"><div class="category">${esc(x.type)}</div><b>${esc(x.title)}</b>${x.note?'<p class="muted" style="margin:5px 0">'+esc(x.note)+'</p>':''}<button class="btn secondary" onclick="togglePlan(${x.i})">${x.done?'↩ Planned':'✓ Done'}</button> <button class="btn secondary" onclick="removePlan(${x.i})">Delete</button></div></div></div>`).join('')||'<p class="muted">No plans for this date yet. Add one above.</p>';document.getElementById('weekPlans').innerHTML=days.map(d=>{const a=s.planner.filter(x=>x.d===d).sort((x,y)=>x.start.localeCompare(y.start));return `<div class="plan-row"><b>${dayLabel(d)}</b><div class="muted">${a.length?a.map(x=>esc(x.start)+' · '+esc(x.title)).join('<br>'):'No plans yet'}</div></div>`}).join('')}
 function addGoal(){let x=gt.value.trim();if(x){s.goals.push({t:x,type:gtype.value,done:0});gt.value='';save()}}
 function addInt(){let x=it.value.trim();if(x){s.int.push({t:x,type:itype.value,done:0});it.value='';save()}}
 function addFavorite(){let x=favInput.value.trim();if(x){s.fav.push({t:x,d:new Date().toLocaleString()});favInput.value='';save()}}
@@ -149,6 +172,7 @@ function render(){
   fl.innerHTML=s.fav.map(x=>`<div class="card lock">⭐ ${esc(x.t)}<br><small class="muted">${esc(x.d)}</small></div>`).join('');
   tl.innerHTML=s.tasks.map((x,i)=>`<div class="item"><input type="checkbox" ${x.done?'checked':''} onchange="s.tasks[${i}].done=this.checked;save()"> ${esc(x.t)} <small class="muted">${esc(x.d||'')}</small></div>`).join('')||'<span class="muted">No tasks.</span>';
   tp.innerHTML=s.tasks.filter(x=>!x.done).slice(0,4).map(x=>`<div class="item">☐ ${esc(x.t)}</div>`).join('')||'<span class="muted">Nothing pending 🎉</span>';
+  renderPlanner();
   el.innerHTML=s.events.sort((a,b)=>a.d.localeCompare(b.d)).map(x=>`<div class="item">📅 <b>${esc(x.t)}</b><br><small class="muted">${esc(x.d)} ${esc(x.time||'')}</small></div>`).join('')||'<span class="muted">No events.</span>';
 }
 render();
@@ -263,7 +287,8 @@ function startRealtime(){
     if(Array.isArray(d.favorites))s.fav=d.favorites;
     if(Array.isArray(d.tasks))s.tasks=d.tasks;
     if(Array.isArray(d.events))s.events=d.events;
-    for(const k of ["goals","intimacy","favorites","tasks","events"])
+    if(Array.isArray(d.planner))s.planner=d.planner;
+    for(const k of ["goals","intimacy","favorites","tasks","events","planner"])
       localStorage[k]=JSON.stringify(k==="intimacy"?s.int:k==="favorites"?s.fav:s[k]);
     render();
     syncStatus("🟢 Live sync connected — updated "+new Date().toLocaleTimeString());
@@ -278,7 +303,7 @@ window.syncNow=async()=>{
     const stamp=Date.now();
     window._lastWrite=stamp;
     await setDoc(doc(db,"couples",code,"shared","data"),{
-      goals:s.goals,intimacy:s.int,favorites:s.fav,tasks:s.tasks,events:s.events,
+      goals:s.goals,intimacy:s.int,favorites:s.fav,tasks:s.tasks,events:s.events,planner:s.planner,
       updatedAt:stamp,updatedBy:user.uid,clientStamp:stamp
     });
     syncStatus("🟢 Saved and syncing in real time.");
